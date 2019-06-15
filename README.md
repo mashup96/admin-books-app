@@ -12,4 +12,4 @@ Run `npm run build` to build the project. The build artifacts will be stored in 
 In the `screenshot-webapp` folder there are all screenshot related to the web application pages. <br/>
 In the `screenshot-firebase` folder there are all screenshot of how cloud firestore documents are structured.
 
-## Use of security rules to access data
+## Use of security rules for CRUD
