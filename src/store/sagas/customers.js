@@ -82,8 +82,8 @@ function* getCustomerSaga({ payload: idCustomer }) {
 }
 
 /*
-function that saves customer selected with 
-associated icon in the firebase DB
+function that saves customer selected and 
+attached file in the firebase DB
 */
 function* createCustomerSaga({ payload }) {
     try {
@@ -118,8 +118,8 @@ function* createCustomerSaga({ payload }) {
 }
 
 /*
-function that modifies customer selected with 
-associated icon in the firebase DB
+function that modifies customer selected and 
+attached file in the firebase DB
 */
 function* editCustomerSaga({ payload }) {
     try {
@@ -161,8 +161,8 @@ function* editCustomerSaga({ payload }) {
 }
 
 /*
-function that removes customer selected with the associated 
-icon from the firebase DB 
+function that removes customer selected and 
+attached file from the firebase DB 
 */
 function* deleteCustomerSaga({ payload }) {
     try {

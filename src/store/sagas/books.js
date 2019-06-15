@@ -83,8 +83,8 @@ function* getBookSaga({ payload: idBook }) {
 }
 
 /*
-function that saves book selected with 
-associated icon in the firebase DB
+function that saves book selected and 
+attached file in the firebase DB
 */
 function* createBookSaga({ payload }) {
     try {
@@ -120,8 +120,8 @@ function* createBookSaga({ payload }) {
 }
 
 /*
-function that modifies book selected with 
-associated icon in the firebase DB
+function that modifies book selected and 
+attached file in the firebase DB
 */
 function* editBookSaga({ payload }) {
     try {
@@ -163,8 +163,8 @@ function* editBookSaga({ payload }) {
 }
 
 /*
-function that removes book selected with the associated 
-icon from the firebase DB 
+function that removes book selected and 
+attached file the firebase DB 
 */
 function* deleteBookSaga({ payload }) {
     try {

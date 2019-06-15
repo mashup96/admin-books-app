@@ -2,7 +2,9 @@ import firebase from 'firebase/app';
 import 'firebase/firestore';
 import 'firebase/auth';
 import 'firebase/storage';
-
+/*
+replace these configurations with those of your personal firebase
+*/
 const config = {
     apiKey: "AIzaSyBxGGkKxTNQxAyKStthmymngP0bylhF554",
     authDomain: "admin-books-app.firebaseapp.com",
