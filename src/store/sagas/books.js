@@ -40,7 +40,7 @@ function* getAllBooksSaga({ payload }) {
 
 /*
 function that returns popular books to which
-the authenticated user is associated
+the authenticated user is associated 
 */
 function* getPopularBooksSaga({ payload }) {
     try {
