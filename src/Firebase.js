@@ -4,7 +4,7 @@ import 'firebase/auth';
 import 'firebase/storage';
 /*
 Replace these configurations with those of 
-your personal firebase
+your personal firebase 
 */
 const config = {
     apiKey: "AIzaSyBxGGkKxTNQxAyKStthmymngP0bylhF554",
