@@ -13,9 +13,9 @@ In the `screenshot-webapp` folder there are all screenshot related to the web ap
 In the `screenshot-firebase` folder there are all screenshot of how cloud firestore documents are structured.
 
 ## Use of security rules for CRUD
-condition create: request.resource.data.uid == request.auth.uid 
+condition create: `request.resource.data.uid == request.auth.uid` 
 <br/> (if the sent uid is equal to the uid of the authenticated user)
 <br/>
-condition update,delete,read: resource.data.uid == request.auth.uid
+condition update,delete,read: `resource.data.uid == request.auth.uid`
 <br/> (if the sent uid is equal to the uid of the authenticated user)
 
