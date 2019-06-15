@@ -15,5 +15,5 @@ In the `screenshot-firebase` folder there are all screenshot of how cloud firest
 ## Use of security rules for CRUD
 condition <strong>create</strong>: `request.resource.data.uid == request.auth.uid` <br/>( if the sent uid is equal to the uid of the authenticated user ) 
 <br/><br/>
-condition <strong>update,delete,read</strong>: `resource.data.uid == request.auth.uid` <br/>( if the sent uid is equal to the uid of the authenticated user )
+condition <strong>update,delete,read</strong>: `resource.data.uid == request.auth.uid` <br/>( if the uid of the stored resource is equal to the uid of the authenticated user )
 
