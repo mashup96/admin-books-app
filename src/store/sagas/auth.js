@@ -44,7 +44,7 @@ function* loginSaga({ payload }) {
     }
 }
 
-// Logout clears contents of the local storage
+// Logout clears contents of the local storage 
 function* logoutSaga({ payload }) {
     try {
         yield put(manageLoading.request());

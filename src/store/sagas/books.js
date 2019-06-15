@@ -18,7 +18,7 @@ import { PATH_BOOKS } from '../../shared/constant';
 
 /*
 function that returns all books to which
-the authenticated user is associated
+the authenticated user is associated 
 */
 function* getAllBooksSaga({ payload }) {
     try {
