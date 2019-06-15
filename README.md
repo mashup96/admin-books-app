@@ -9,3 +9,5 @@ The app will automatically reload if you change any of the source files.
 Run `npm run build` to build the project. The build artifacts will be stored in the `build/` directory.
 
 ## Screenshot to consult
+In the `screenshot-webapp` folder there are all screenshot related to the web application pages.
+In the `screenshot-firebase` folder there are all screenshot of how cloud firestore documents are structured.
