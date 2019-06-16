@@ -1,5 +1,5 @@
 # admin-books-app
-A dashboard for book publisher created with React, Redux-Saga and Firebase-Cloud-Firestore
+An dashboard for book publisher created with React, Redux-Saga and Firebase-Cloud-Firestore
 
 ## Getting Started
 1) git clone https://github.com/mashup96/admin-books-app.git <br/>
