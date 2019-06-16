@@ -2,8 +2,8 @@
 A dashboard for book publisher created with React, Redux-Saga and Firebase-Cloud-Firestore
 
 ## Getting Started
-git clone https://github.com/mashup96/github-dashboard-pwa.git <br/>
-cd github-dashboard-pwa <br/>
+git clone https://github.com/mashup96/admin-books-app.git <br/>
+cd admin-books-app <br/>
 `npm install`
 
 ## Development server
