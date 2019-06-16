@@ -1,6 +1,11 @@
 # admin-books-app
 A dashboard for book publisher created with React, Redux-Saga and Firebase-Cloud-Firestore
 
+## Getting Started
+git clone https://github.com/mashup96/github-dashboard-pwa.git <br/>
+cd github-dashboard-pwa <br/>
+`npm install`
+
 ## Development server
 Run `npm start` for a dev server. Navigate to `http://localhost:3000/`. 
 The app will automatically reload if you change any of the source files.
