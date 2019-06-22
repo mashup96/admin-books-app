@@ -159,18 +159,19 @@ const BookForm = props => {
             </FormGroup>
           </Col>
         </Row>
-        <div className="mt-3">
+        <div className="mt-3"> 
           <Button
             type="submit"
             color="primary"
+            className="pull-right"
             size="lg">
             Save book
-          </Button>
-            &nbsp; &nbsp;
+          </Button>          
           <NavLink exact to={PATH_BOOKS}>
-            <Button color="secondary" size="lg">Cancel</Button>
+            <Button color="secondary"             
+            size="lg">Back</Button>
           </NavLink>
-        </div>
+         </div> 
       </Form>
     </React.Fragment>
   );

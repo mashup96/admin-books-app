@@ -210,12 +210,12 @@ const CustomerForm = props => {
           <Button
             type="submit"
             color="primary"
+            className="pull-right"
             size="lg">
             Save customer
-            </Button>
-          &nbsp; &nbsp;
-            <NavLink exact to={PATH_CUSTOMERS}>
-            <Button color="secondary" size="lg">Cancel</Button>
+          </Button>       
+          <NavLink exact to={PATH_CUSTOMERS}>
+            <Button color="secondary" size="lg">Back</Button>
           </NavLink>
         </div>
       </Form>
