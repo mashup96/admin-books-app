@@ -10,7 +10,16 @@ import {
     editBook,
     deleteBook
 } from '../actions';
-import firebase from '../../Firebase.js';
+import { 
+    getCollection, 
+    getDocById,
+    addDoc,
+    updateDoc,
+    deleteDoc,
+    saveFileOnStorage,
+    deleteFileOnStorage,
+    getPathReference
+} from './firebaseAPI';
 import { BOOKS } from '../../shared/constant';
 import { sortByNumber, getElementsFromDocs } from '../../shared/utility';
 import { sortAlphabetically } from '../../shared/utility';
@@ -24,10 +33,7 @@ function* getAllBooksSaga({ payload }) {
     try {
         yield put(manageLoading.request());
         const { uid } = payload;
-        const querySnapshot = yield firebase.firestore()
-            .collection(BOOKS)
-            .where("uid", "==", uid)
-            .get();
+        const querySnapshot = yield getCollection(BOOKS,uid);        
         const books = getElementsFromDocs(querySnapshot);
         const booksOrdered = sortAlphabetically(books, "title", "ASC");
         yield put(getInitialBooks.success({ books: booksOrdered }));
@@ -46,10 +52,7 @@ function* getPopularBooksSaga({ payload }) {
     try {
         yield put(manageLoading.request());
         const { uid } = payload;
-        const querySnapshot = yield firebase.firestore()
-            .collection(BOOKS)
-            .where("uid", "==", uid)
-            .get();
+        const querySnapshot = yield getCollection(BOOKS,uid);
         const books = getElementsFromDocs(querySnapshot);
         const orderedBooks = sortByNumber(books, "numSold", "DESC");
         let popularBooks = [];
@@ -71,8 +74,7 @@ to the id passed as a parameter
 function* getBookSaga({ payload: idBook }) {
     try {
         yield put(manageLoading.request());
-        const doc = yield firebase.firestore().collection(BOOKS)
-            .doc(idBook).get();
+        const doc = yield getDocById(BOOKS,idBook);
         const book = { ...doc.data(), id: doc.id };
         yield put(getBook.success({ book }));
     } catch (error) {
@@ -90,25 +92,19 @@ function* createBookSaga({ payload }) {
     try {
         yield put(manageLoading.request());
         const { dataBook, imageBook, history } = payload;
-        const saveResponse = yield firebase.firestore()
-            .collection(BOOKS)
-            .add(dataBook);
+        const saveResponse = yield addDoc(BOOKS, dataBook);
         if (imageBook instanceof File) {
             const uniqueFilename = `${imageBook.name}_${new Date().getTime()}`;
             const newFullPath = `${BOOKS}/${uniqueFilename}`;
             const metadata = { customMetadata: { uid: dataBook.uid } };
-            const uploadResponse = yield firebase.storage()
-                .ref(newFullPath)
-                .put(imageBook, metadata);
+            const uploadResponse = yield saveFileOnStorage(newFullPath,imageBook,metadata);
             const { snapshot } = uploadResponse.task;
-            const pathReference = firebase.storage().ref(snapshot.ref.fullPath);
+            const pathReference = yield getPathReference(snapshot.ref.fullPath);            
             const downloadUrl = yield pathReference.getDownloadURL();
-            yield firebase.firestore().collection(BOOKS)
-                .doc(saveResponse.id)
-                .update({
-                    downloadPath: downloadUrl,
-                    fullPath: newFullPath
-                });
+            const updatedProperties = { downloadPath: downloadUrl,
+                                        fullPath: newFullPath
+                                      };
+            yield updateDoc(BOOKS,saveResponse.id,updatedProperties);
         }
         history.push(PATH_BOOKS);
     } catch (error) {
@@ -127,32 +123,26 @@ function* editBookSaga({ payload }) {
     try {
         yield put(manageLoading.request());
         const { idBook,
-            dataBook,
-            imageBook,
-            fullPath,
-            history } = payload;
-        yield firebase.firestore().collection(BOOKS)
-            .doc(idBook)
-            .update(dataBook);
+                dataBook,
+                imageBook,
+                fullPath,
+                history } = payload;
+        yield updateDoc(BOOKS,idBook,dataBook);
         if (imageBook instanceof File) {
-            if (dataBook.downloadPath) {
-                yield firebase.storage().ref(fullPath).delete();
+            if (dataBook.downloadPath) {               
+                yield deleteFileOnStorage(fullPath);
             }
             const uniqueFilename = imageBook.name + "_" + new Date().getTime();
             const newFullPath = `${BOOKS}/${uniqueFilename}`;
             const metadata = { customMetadata: { uid: dataBook.uid } };
-            const uploadResponse = yield firebase.storage()
-                .ref(newFullPath)
-                .put(imageBook, metadata);
+            const uploadResponse = yield saveFileOnStorage(newFullPath,imageBook,metadata);
             const { snapshot } = uploadResponse.task;
-            const pathReference = firebase.storage().ref(snapshot.ref.fullPath);
+            const pathReference = yield getPathReference(snapshot.ref.fullPath);   
             const downloadUrl = yield pathReference.getDownloadURL();
-            yield firebase.firestore().collection(BOOKS)
-                .doc(idBook)
-                .update({
-                    downloadPath: downloadUrl,
-                    fullPath: newFullPath
-                });
+            const updatedProperties = { downloadPath: downloadUrl,
+                                        fullPath: newFullPath
+                                      };
+            yield updateDoc(BOOKS,idBook,updatedProperties);
         }
         history.push(PATH_BOOKS);
     } catch (error) {
@@ -169,12 +159,10 @@ icon from the firebase DB
 function* deleteBookSaga({ payload }) {
     try {
         yield put(manageLoading.request());
-        const { id, fullPath } = payload;
-        yield firebase.firestore().collection(BOOKS)
-            .doc(id)
-            .delete();
-        if (fullPath) {
-            yield firebase.storage().ref(fullPath).delete();
+        const { id, fullPath } = payload;    
+        yield deleteDoc(BOOKS,id); 
+        if (fullPath) {       
+            yield deleteFileOnStorage(fullPath);
         }
         yield put(deleteBook.success({ id }));
     } catch (error) {

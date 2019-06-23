@@ -10,7 +10,16 @@ import {
     editCustomer,
     deleteCustomer
 } from '../actions';
-import firebase from '../../Firebase.js';
+import { 
+    getCollection, 
+    getDocById,
+    addDoc,
+    updateDoc,
+    deleteDoc,
+    saveFileOnStorage,
+    deleteFileOnStorage,
+    getPathReference
+} from './firebaseAPI';
 import { CUSTOMERS } from '../../shared/constant';
 import { sortByNumber, sortAlphabetically, getElementsFromDocs } from '../../shared/utility';
 import { PATH_CUSTOMERS } from '../../shared/constant';
@@ -23,10 +32,7 @@ function* getAllCustomersSaga({ payload }) {
     try {
         yield put(manageLoading.request());
         const { uid } = payload;
-        const querySnapshot = yield firebase.firestore()
-            .collection(CUSTOMERS)
-            .where("uid", "==", uid)
-            .get();
+        const querySnapshot = yield getCollection(CUSTOMERS,uid); 
         const customers = getElementsFromDocs(querySnapshot);
         const customersOrdered = sortAlphabetically(customers, "name", "ASC");
         yield put(getInitialCustomers.success({ customers: customersOrdered }));
@@ -45,10 +51,7 @@ function* getLoyalCustomersSaga({ payload }) {
     try {
         yield put(manageLoading.request());
         const { uid } = payload;
-        const querySnapshot = yield firebase.firestore()
-            .collection(CUSTOMERS)
-            .where("uid", "==", uid)
-            .get();
+        const querySnapshot = yield getCollection(CUSTOMERS,uid); 
         const customers = getElementsFromDocs(querySnapshot);
         const orderedCustomers = sortByNumber(customers, "numberOrderedBooks", "DESC");
         let loyalCustomers = [];
@@ -70,8 +73,7 @@ to the id passed as a parameter
 function* getCustomerSaga({ payload: idCustomer }) {
     try {
         yield put(manageLoading.request());
-        const doc = yield firebase.firestore().collection(CUSTOMERS)
-            .doc(idCustomer).get();
+        const doc = yield getDocById(CUSTOMERS,idCustomer); 
         const customer = { ...doc.data(), id: doc.id };
         yield put(getCustomer.success({ customer }));
     } catch (error) {
@@ -89,25 +91,20 @@ function* createCustomerSaga({ payload }) {
     try {
         yield put(manageLoading.request());
         const { dataCustomer, imageCustomer, history } = payload;
-        const saveResponse = yield firebase.firestore()
-            .collection(CUSTOMERS)
-            .add(dataCustomer);
+        const saveResponse = yield addDoc(CUSTOMERS, dataCustomer);
         if (imageCustomer instanceof File) {
             const uniqueFilename = `${imageCustomer.name}_${new Date().getTime()}`;
             const newFullPath = `${CUSTOMERS}/${uniqueFilename}`;
             const metadata = { customMetadata: { uid: dataCustomer.uid } };
-            const uploadResponse = yield firebase.storage()
-                .ref(newFullPath)
-                .put(imageCustomer, metadata);
+            const uploadResponse = yield saveFileOnStorage(newFullPath, 
+                                                    imageCustomer, metadata);
             const { snapshot } = uploadResponse.task;
-            const pathReference = firebase.storage().ref(snapshot.ref.fullPath);
+            const pathReference = yield getPathReference(snapshot.ref.fullPath);
             const downloadUrl = yield pathReference.getDownloadURL();
-            yield firebase.firestore().collection(CUSTOMERS)
-                .doc(saveResponse.id)
-                .update({
-                    downloadPath: downloadUrl,
-                    fullPath: newFullPath
-                });
+            const updatedProperties = { downloadPath: downloadUrl,
+                                        fullPath: newFullPath
+                                      };
+            yield updateDoc(CUSTOMERS,saveResponse.id,updatedProperties);
         }
         history.push(PATH_CUSTOMERS);
     } catch (error) {
@@ -129,28 +126,23 @@ function* editCustomerSaga({ payload }) {
             imageCustomer,
             fullPath,
             history } = payload;
-        yield firebase.firestore().collection(CUSTOMERS)
-            .doc(idCustomer)
-            .update(dataCustomer);
+        yield updateDoc(CUSTOMERS,idCustomer,dataCustomer);
         if (imageCustomer instanceof File) {
-            if (dataCustomer.downloadPath) {
-                yield firebase.storage().ref(fullPath).delete();
+            if (dataCustomer.downloadPath) {                
+                yield deleteFileOnStorage(fullPath);
             }
             const uniqueFilename = imageCustomer.name + "_" + new Date().getTime();
             const newFullPath = `${CUSTOMERS}/${uniqueFilename}`;
             const metadata = { customMetadata: { uid: dataCustomer.uid } };
-            const uploadResponse = yield firebase.storage()
-                .ref(newFullPath)
-                .put(imageCustomer, metadata);
+            const uploadResponse = yield saveFileOnStorage(newFullPath, 
+                                                    imageCustomer, metadata);
             const { snapshot } = uploadResponse.task;
-            const pathReference = firebase.storage().ref(snapshot.ref.fullPath);
+            const pathReference = yield getPathReference(snapshot.ref.fullPath);      
             const downloadUrl = yield pathReference.getDownloadURL();
-            yield firebase.firestore().collection(CUSTOMERS)
-                .doc(idCustomer)
-                .update({
-                    downloadPath: downloadUrl,
-                    fullPath: newFullPath
-                });
+            const updatedProperties = { downloadPath: downloadUrl,
+                fullPath: newFullPath
+              };
+            yield updateDoc(CUSTOMERS,idCustomer,updatedProperties);
         }
         history.push(PATH_CUSTOMERS);
     } catch (error) {
@@ -168,11 +160,9 @@ function* deleteCustomerSaga({ payload }) {
     try {
         yield put(manageLoading.request());
         const { id, fullPath } = payload;
-        yield firebase.firestore().collection(CUSTOMERS)
-            .doc(id)
-            .delete();
+        yield deleteDoc(CUSTOMERS,id);
         if (fullPath) {
-            yield firebase.storage().ref(fullPath).delete();
+            yield deleteFileOnStorage(fullPath);
         }
         yield put(deleteCustomer.success({ id }));
     } catch (error) {

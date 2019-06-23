@@ -3,7 +3,7 @@ import {
     manageLoading,
     getTimeframeList
 } from '../actions';
-import firebase from '../../Firebase.js';
+import { getCollection } from './firebaseAPI';
 import { TIMEFRAME } from '../../shared/constant';
 import { getElementsFromDocs } from '../../shared/utility';
 
@@ -15,10 +15,7 @@ function* getTimeframeListSaga({ payload }) {
     try {
         yield put(manageLoading.request());
         const { uid } = payload;
-        const querySnapshot = yield firebase.firestore()
-            .collection(TIMEFRAME)
-            .where("uid", "==", uid)
-            .get();
+        const querySnapshot = yield getCollection(TIMEFRAME,uid);
         const timeframeList = getElementsFromDocs(querySnapshot);
         yield put(getTimeframeList.success({ timeframeList }));
     } catch (error) {

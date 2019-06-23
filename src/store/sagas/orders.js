@@ -6,7 +6,7 @@ import {
     getInitialOrders,
     getLatestOrders
 } from '../actions';
-import firebase from '../../Firebase.js';
+import { getCollection } from './firebaseAPI';
 import { ORDERS } from '../../shared/constant';
 import { sortByNumber, getElementsFromDocs } from '../../shared/utility';
 
@@ -18,10 +18,7 @@ function* getAllOrdersSaga({ payload }) {
     try {
         yield put(manageLoading.request());
         const { uid } = payload;
-        const querySnapshot = yield firebase.firestore()
-            .collection(ORDERS)
-            .where("uid", "==", uid)
-            .get();
+        const querySnapshot = yield getCollection(ORDERS, uid); 
         const orders = getElementsFromDocs(querySnapshot);
         const sortedOrders = sortByNumber(orders, "id", "DESC");
         yield put(getInitialOrders.success({ orders: sortedOrders }));
@@ -40,10 +37,7 @@ function* getLatestOrdersSaga({ payload }) {
     try {
         yield put(manageLoading.request());
         const { uid } = payload;
-        const querySnapshot = yield firebase.firestore()
-            .collection(ORDERS)
-            .where("uid", "==", uid)
-            .get();
+        const querySnapshot = yield getCollection(ORDERS, uid); 
         const orders = getElementsFromDocs(querySnapshot);
         const sortedOrders = sortByNumber(orders, "id", "DESC");
         let latestOrders = [];

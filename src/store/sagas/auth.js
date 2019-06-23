@@ -6,7 +6,7 @@ import {
     logout,
     checkAuthTimeout
 } from '../actions';
-import firebase from '../../Firebase.js';
+import { signIn, signOut } from './firebaseAPI';
 
 /*
 after 30 minutes elapsed from login, logout is performed 
@@ -27,10 +27,7 @@ function* loginSaga({ payload }) {
         yield put(manageLoading.request());
         const { history, formValue } = payload;
         const { email, password } = formValue;
-        const response = yield firebase.auth()
-            .signInWithEmailAndPassword(
-                email, password
-            );
+        const response = yield signIn(email, password);
         const { uid, refreshToken } = response.user;      
         localStorage.setItem("uid", uid);
         localStorage.setItem("token", refreshToken);
@@ -49,7 +46,7 @@ function* logoutSaga({ payload }) {
     try {
         yield put(manageLoading.request());
         const { history } = payload;
-        yield firebase.auth().signOut();
+        yield signOut();
         yield delay(500);
         localStorage.clear();
         yield put(logout.success());
