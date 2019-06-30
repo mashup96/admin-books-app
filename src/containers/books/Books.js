@@ -37,8 +37,8 @@ class Books extends React.Component {
   }
 
   toggleDelete = (event, book) => {
-    this.setState(prevState => ({
-      isOpenModal: !prevState.isOpenModal,
+    this.setState((state,props) => ({
+      isOpenModal: !state.isOpenModal,
       bookSelected: book,
     }));
   }

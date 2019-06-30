@@ -43,16 +43,16 @@ class Dashboard extends Component {
         if(this.state.isOpenModal){
            this.props.resetErrorAuth();
         }          
-        this.setState(prevState => ({  
-          isOpenModal: !prevState.isOpenModal          
+        this.setState((state,props) => ({  
+          isOpenModal: !state.isOpenModal          
         }));       
     }
 
     shouldComponentUpdate(nextProps,nextState){ 
         if(nextProps.error.code && !this.state.isOpenModal){           
-           this.setState(prevState => ({  
+           this.setState({  
                 isOpenModal: true                      
-           }));                           
+           });                           
         } 
        return true; 
     }

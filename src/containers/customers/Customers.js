@@ -36,8 +36,8 @@ class Customers extends React.Component {
   }
 
   toggleDelete = (event, customer) => {
-    this.setState(prevState => ({
-      isOpenModal: !prevState.isOpenModal,
+    this.setState((state,props) => ({
+      isOpenModal: !state.isOpenModal,
       customerSelected: { ...customer }
     }));
   }
