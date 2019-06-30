@@ -9,8 +9,9 @@ An dashboard for book publisher created with React, Redux-Saga and Firebase-Clou
 ## Development server
 Run `npm start` for a dev server. Navigate to `http://localhost:3000/`. 
 The app will automatically reload if you change any of the source files.
-<br/> 
+<br/> <br/> 
 Since this is an example project, the login credentials are:
+<br/>  <br/> 
 Username: mattia.carria@gmail.com
 <br/> 
 Password: 123456
