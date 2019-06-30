@@ -27,6 +27,10 @@ const initialState = {
     error: {}
 };
 
+/*
+I used the facade pattern because there are functions that manage 
+client side both paging and filtering
+*/
 const ordersReducer = createReducer(initialState, {
     [getInitialOrders.SUCCESS]: getInitialOrdersFacade,
     [getLatestOrders.SUCCESS]: getLatestOrdersFacade,
